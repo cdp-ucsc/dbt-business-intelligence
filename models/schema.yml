@@ -182,6 +182,12 @@ models:
             type: number
             decimalPlaces: 2
             prefix: "$"
+      - name: recent_order_date
+        meta:
+          label: Recent Order Date
+      - name: first_order_date
+        meta:
+          label: First Order Date
 
   - name: dim_date
     description: The Order Date dimension allows you to analyze metrics across time periods at many levels of granularity (year, quarter, month, day).
@@ -453,28 +459,40 @@ metrics:
     label: Quantity
     model: ref('fact_sales')
     description: "Sum of quantity sold"
-    type: sum
-    sql: quantity
+    calculation_method: sum
+    expression: quantity
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
   - name: price
     label: Price
     model: ref('fact_sales')
     description: "Average price"
-    type: average
-    sql: price
+    calculation_method: average
+    expression: price
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
   - name: sales
     label: Sales
     model: ref('fact_sales')
     description: "Sum of total sales revenue"
-    type: sum
-    sql: sales
+    calculation_method: sum
+    expression: sales
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
     meta:
       synonyms: # for business searching and natural language processing
         - Revenue
@@ -485,45 +503,66 @@ metrics:
     label: Target
     model: ref('fact_sales')
     description: "Sum of target sales revenue"
-    type: sum
-    sql: target
+    calculation_method: sum
+    expression: target
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
   - name: row_count
     label: Row Count
     model: ref('fact_sales')
     description: "A non-distinct count of rows"
-    type: count
+    calculation_method: count
+    expression: order_key
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
   - name: customer_count
     label: Customer Count
     model: ref('fact_sales')
     description: "A `distinct_count` of customers"
-    type: count_distinct
-    sql: customer_key
+    calculation_method: count_distinct
+    expression: customer_key
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
   - name: product_count
     label: Product Count
     model: ref('fact_sales')
     description: "A `distinct_count` of products"
-    type: count_distinct
-    sql: product_key
+    calculation_method: count_distinct
+    expression: product_key
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
   - name: order_count
     label: Order Count
     model: ref('fact_sales')
     description: "A `distinct_count` of orders"
-    type: count_distinct
-    sql: order_key
+    calculation_method: count_distinct
+    expression: order_key
     timestamp: date_day
     time_grains: [day, week, month, year]
+    dimensions:
+      - order_key
+      - customer_key
+      - product_key
 
 sources:
   - name: salesforce
